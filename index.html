@@ -38,23 +38,23 @@
 
     .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
     
-    aside { width: 340px; background: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.02); transition: transform 0.3s ease; }
-    aside.collapsed { transform: translateX(-340px); position: absolute; height: 100%; }
+    aside { width: 360px; background: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.02); transition: transform 0.3s ease; }
+    aside.collapsed { transform: translateX(-360px); position: absolute; height: 100%; }
     .sidebar-toggle-floating { position: absolute; left: 10px; top: 10px; z-index: 20; background: #1e293b; color: white; border: none; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
     
-    .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border-color); }
-    .sidebar-section h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 10px; }
+    .sidebar-section { padding: 14px; border-bottom: 1px solid var(--border-color); }
+    .sidebar-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; }
     
-    .paint-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .paint-btn { padding: 8px 10px; border: 2px solid transparent; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px; background: #f1f5f9; color: var(--text-main); }
+    .paint-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .paint-btn { padding: 6px 8px; border: 2px solid transparent; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 6px; background: #f1f5f9; color: var(--text-main); }
     .paint-btn.active { border-color: var(--text-main); box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
-    .color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
     .search-box { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
     .filter-row { display: flex; gap: 6px; margin-bottom: 8px; }
     .filter-select { flex: 1; padding: 6px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; background: white; }
     
-    .county-list { flex: 1; overflow-y: auto; max-height: 280px; border: 1px solid var(--border-color); border-radius: 6px; background: white; }
+    .county-list { flex: 1; overflow-y: auto; max-height: 240px; border: 1px solid var(--border-color); border-radius: 6px; background: white; }
     .county-item { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; font-size: 13px; cursor: pointer; }
     .county-item:hover { background: #f8fafc; }
     .county-item.selected { background: #eff6ff; border-left: 4px solid var(--accent); }
@@ -62,14 +62,19 @@
     .map-container { flex: 1; position: relative; background: #fdfdfd; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     svg { width: 100%; height: 100%; display: block; }
     
-    .drawer { position: absolute; right: 0; top: 0; width: 360px; height: 100%; background: white; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.05); z-index: 15; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s ease; }
+    /* Drawer styling */
+    .drawer { position: absolute; right: 0; top: 0; width: 400px; height: 100%; background: white; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.05); z-index: 15; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s ease; }
     .drawer.open { transform: translateX(0); }
     .drawer-header { padding: 16px 20px; background: #1e293b; color: white; display: flex; justify-content: space-between; align-items: center; }
-    .drawer-body { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-    .form-control { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; }
-    textarea.form-control { resize: vertical; min-height: 100px; }
+    .drawer-body { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    
+    .dept-card { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .dept-title { font-weight: 700; font-size: 13px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
+    .dept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+    .form-control { padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background: white; }
 
     .map-legend { position: absolute; bottom: 20px; left: 20px; background: rgba(255,255,255,0.95); padding: 12px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--border-color); font-size: 12px; z-index: 10; backdrop-filter: blur(4px); }
     .legend-title { font-weight: 700; margin-bottom: 8px; font-size: 13px; color: var(--text-main); }
@@ -127,7 +132,7 @@
   <div class="workspace">
     <aside id="sidebar">
       <div class="sidebar-section">
-        <h3>Paint Brush</h3>
+        <h3>Paint Brush (Master County Status)</h3>
         <div class="paint-toolbar" id="paintToolbar"></div>
       </div>
 
@@ -164,40 +169,141 @@
       </div>
     </div>
 
+    <!-- County & Departments Drawer -->
     <div class="drawer" id="countyDrawer">
       <div class="drawer-header">
-        <h3 id="drawerTitle">County Details</h3>
+        <div>
+          <h3 id="drawerTitle">County Details</h3>
+          <div id="drawerPopulation" style="font-size:12px; opacity:0.8; margin-top:2px;">Population: 0</div>
+        </div>
         <button class="btn btn-secondary" style="padding: 2px 8px;" onclick="closeDrawer()">✕</button>
       </div>
       <div class="drawer-body">
+        
+        <!-- General County Overview -->
         <div class="form-group">
-          <label>Status / Category</label>
-          <select class="form-control" id="drawerStatus" onchange="updateSelectedCountyFromDrawer()">
+          <label>Master County Status</label>
+          <select class="form-control" id="drawerMasterStatus" onchange="updateMasterStatusFromDrawer()">
             <option value="green">Current Customers (Green)</option>
             <option value="yellow">Pipeline (Yellow)</option>
             <option value="orange">Pipeline - Will Sign Quick (Orange)</option>
             <option value="gray">No Opportunity / Untargeted (Gray)</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Account Owner / Rep</label>
-          <select class="form-control" id="drawerOwner" onchange="updateSelectedCountyFromDrawer()">
-            <option value="Unassigned">Unassigned</option>
-            <option value="Michael">Michael</option>
-            <option value="Forrest">Forrest</option>
-            <option value="Zach">Zach</option>
-          </select>
+
+        <hr style="border:0; border-top:1px solid var(--border-color); margin: 4px 0;">
+
+        <!-- 1. Tax Assessor-Collector Department -->
+        <div class="dept-card">
+          <div class="dept-title">
+            <span>🏛️ Tax Assessor-Collector</span>
+            <span id="taxContactDisplay" style="font-size:11px; font-weight:normal; color:var(--text-muted);"></span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted);" id="taxMetaDisplay">Est. Tax AGR: $0 | Est. DMV AGR: $0</div>
+          <div class="dept-grid">
+            <div class="form-group">
+              <label>Owner</label>
+              <select class="form-control" id="taxOwner" onchange="updateDeptFromDrawer()">
+                <option value="Unassigned">Unassigned</option>
+                <option value="Michael">Michael</option>
+                <option value="Forrest">Forrest</option>
+                <option value="Zach">Zach</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" id="taxStatus" onchange="updateDeptFromDrawer()">
+                <option value="green">Customer</option>
+                <option value="yellow">Pipeline</option>
+                <option value="orange">Sign Quick</option>
+                <option value="gray">Untargeted</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Notes & Next Steps</label>
+            <input type="text" class="form-control" id="taxNotes" placeholder="Notes..." oninput="updateDeptFromDrawer()">
+          </div>
         </div>
-        <div class="form-group">
-          <label>Estimated Deal Value ($)</label>
-          <input type="text" class="form-control" id="drawerValue" placeholder="e.g. $45,000" oninput="updateSelectedCountyFromDrawer()">
+
+        <!-- 2. County Clerk Department -->
+        <div class="dept-card">
+          <div class="dept-title">
+            <span>📜 County Clerk</span>
+            <span id="ccContactDisplay" style="font-size:11px; font-weight:normal; color:var(--text-muted);"></span>
+          </div>
+          <div class="dept-grid">
+            <div class="form-group">
+              <label>Owner</label>
+              <select class="form-control" id="ccOwner" onchange="updateDeptFromDrawer()">
+                <option value="Unassigned">Unassigned</option>
+                <option value="Michael">Michael</option>
+                <option value="Forrest">Forrest</option>
+                <option value="Zach">Zach</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" id="ccStatus" onchange="updateDeptFromDrawer()">
+                <option value="green">Customer</option>
+                <option value="yellow">Pipeline</option>
+                <option value="orange">Sign Quick</option>
+                <option value="gray">Untargeted</option>
+              </select>
+            </div>
+          </div>
+          <div class="dept-grid">
+            <div class="form-group">
+              <label>Manual AGR ($)</label>
+              <input type="text" class="form-control" id="ccValue" placeholder="e.g. $45,000" oninput="updateDeptFromDrawer()">
+            </div>
+            <div class="form-group">
+              <label>Notes</label>
+              <input type="text" class="form-control" id="ccNotes" placeholder="Notes..." oninput="updateDeptFromDrawer()">
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Notes & Next Steps</label>
-          <textarea class="form-control" id="drawerNotes" placeholder="Enter account status notes..." oninput="updateSelectedCountyFromDrawer()"></textarea>
+
+        <!-- 3. District Clerk Department -->
+        <div class="dept-card">
+          <div class="dept-title">
+            <span>⚖️ District Clerk</span>
+            <span id="dcContactDisplay" style="font-size:11px; font-weight:normal; color:var(--text-muted);"></span>
+          </div>
+          <div class="dept-grid">
+            <div class="form-group">
+              <label>Owner</label>
+              <select class="form-control" id="dcOwner" onchange="updateDeptFromDrawer()">
+                <option value="Unassigned">Unassigned</option>
+                <option value="Michael">Michael</option>
+                <option value="Forrest">Forrest</option>
+                <option value="Zach">Zach</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" id="dcStatus" onchange="updateDeptFromDrawer()">
+                <option value="green">Customer</option>
+                <option value="yellow">Pipeline</option>
+                <option value="orange">Sign Quick</option>
+                <option value="gray">Untargeted</option>
+              </select>
+            </div>
+          </div>
+          <div class="dept-grid">
+            <div class="form-group">
+              <label>Manual AGR ($)</label>
+              <input type="text" class="form-control" id="dcValue" placeholder="e.g. $30,000" oninput="updateDeptFromDrawer()">
+            </div>
+            <div class="form-group">
+              <label>Notes</label>
+              <input type="text" class="form-control" id="dcNotes" placeholder="Notes..." oninput="updateDeptFromDrawer()">
+            </div>
+          </div>
         </div>
-        <div style="margin-top: auto; display: flex; gap: 10px;">
-          <button class="btn" style="flex:1;" onclick="closeDrawer()">Done</button>
+
+        <div style="margin-top: auto;">
+          <button class="btn" style="width:100%; justify-content:center;" onclick="closeDrawer()">Done</button>
         </div>
       </div>
     </div>
@@ -238,6 +344,7 @@
     let activeUser = "Michael";
     let activePaintColor = "green";
     let selectedCountyId = null;
+    let countyDirectory = {};
     let mapData = {
       counties: {},
       categories: [
@@ -261,6 +368,7 @@
         document.getElementById("passwordModal").classList.remove("open");
       }
 
+      await loadDirectoryData();
       loadLocalState();
       renderPaintToolbar();
       renderLegend();
@@ -269,6 +377,15 @@
       initMap();
       setupSyncPolling();
     });
+
+    async function loadDirectoryData() {
+      try {
+        const res = await fetch("https://raw.githubusercontent.com/mbruner22/Texasmapsync/main/directory_data.json");
+        countyDirectory = await res.json();
+      } catch(e) {
+        // Fallback baseline estimate if external lookup missing
+      }
+    }
 
     function verifyPassword() {
       const inputVal = document.getElementById("passwordInput").value;
@@ -288,7 +405,7 @@
     }
 
     function loadLocalState() {
-      const saved = safeGetItem("tx_sales_map_jsonbin_state");
+      const saved = safeGetItem("tx_sales_map_departments_v1");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -298,7 +415,7 @@
     }
 
     function saveLocalState() {
-      safeSetItem("tx_sales_map_jsonbin_state", JSON.stringify(mapData));
+      safeSetItem("tx_sales_map_departments_v1", JSON.stringify(mapData));
     }
 
     async function initMap() {
@@ -348,9 +465,9 @@
             
             mapData.counties[name] = {
               status: col,
-              owner: "Unassigned",
-              value: "",
-              notes: ""
+              tax: { owner: "Unassigned", status: col, notes: "" },
+              cc: { owner: "Unassigned", status: "gray", value: "", notes: "" },
+              dc: { owner: "Unassigned", status: "gray", value: "", notes: "" }
             };
           });
           saveLocalState();
@@ -440,9 +557,10 @@
 
     function paintCounty(name) {
       if (!mapData.counties[name]) {
-        mapData.counties[name] = { status: "gray", owner: "Unassigned", value: "", notes: "" };
+        mapData.counties[name] = { status: activePaintColor, tax: { owner: "Unassigned", status: activePaintColor, notes: "" }, cc: { owner: "Unassigned", status: "gray", value: "", notes: "" }, dc: { owner: "Unassigned", status: "gray", value: "", notes: "" } };
       }
       mapData.counties[name].status = activePaintColor;
+      mapData.counties[name].tax.status = activePaintColor;
       saveLocalState();
       renderCountiesOnMap();
       filterCountyList();
@@ -459,9 +577,9 @@
 
       const filtered = features.filter(f => {
         const name = f.properties.name;
-        const data = mapData.counties[name] || { status: "gray", owner: "Unassigned" };
+        const data = mapData.counties[name] || { status: "gray", tax: {owner:"Unassigned"}, cc: {owner:"Unassigned"}, dc: {owner:"Unassigned"} };
         if (searchVal && !name.toLowerCase().includes(searchVal)) return false;
-        if (ownerVal !== "ALL" && data.owner !== ownerVal) return false;
+        if (ownerVal !== "ALL" && data.tax.owner !== ownerVal && data.cc.owner !== ownerVal && data.dc.owner !== ownerVal) return false;
         if (statusVal !== "ALL" && data.status !== statusVal) return false;
         return true;
       });
@@ -470,7 +588,7 @@
 
       filtered.forEach(f => {
         const name = f.properties.name;
-        const data = mapData.counties[name] || { status: "gray", owner: "Unassigned" };
+        const data = mapData.counties[name] || { status: "gray", tax: {owner:"Unassigned"}, cc: {owner:"Unassigned"}, dc: {owner:"Unassigned"} };
         const cat = mapData.categories.find(c => c.id === data.status) || mapData.categories[3];
 
         const div = document.createElement("div");
@@ -478,16 +596,10 @@
         div.innerHTML = `
           <div>
             <strong>${name}</strong>
-            <div style="font-size:11px; color:var(--text-muted);">Owner: ${data.owner}</div>
+            <div style="font-size:11px; color:var(--text-muted);">Tax: ${data.tax.owner} | CC: ${data.cc.owner}</div>
           </div>
           <div style="display:flex; align-items:center; gap:6px;">
             <span style="width:10px; height:10px; border-radius:50%; background:${cat.color}; display:inline-block;"></span>
-            <select onchange="event.stopPropagation(); quickChangeOwner('${name}', this.value)" class="filter-select" style="font-size:11px; padding:2px;">
-              <option value="Unassigned" ${data.owner==="Unassigned"?"selected":""}>Unassigned</option>
-              <option value="Michael" ${data.owner==="Michael"?"selected":""}>Michael</option>
-              <option value="Forrest" ${data.owner==="Forrest"?"selected":""}>Forrest</option>
-              <option value="Zach" ${data.owner==="Zach"?"selected":""}>Zach</option>
-            </select>
           </div>
         `;
         div.onclick = () => openDrawerForCounty(name);
@@ -499,24 +611,39 @@
       if (geojsonCache) populateCountyList(geojsonCache);
     }
 
-    function quickChangeOwner(name, owner) {
-      if (!mapData.counties[name]) {
-        mapData.counties[name] = { status: "gray", owner: owner, value: "", notes: "" };
-      } else {
-        mapData.counties[name].owner = owner;
-      }
-      saveLocalState();
-      pushCloudState();
-    }
-
     function openDrawerForCounty(name) {
       selectedCountyId = name;
       document.getElementById("drawerTitle").innerText = `${name} County`;
-      const data = mapData.counties[name] || { status: "gray", owner: "Unassigned", value: "", notes: "" };
-      document.getElementById("drawerStatus").value = data.status;
-      document.getElementById("drawerOwner").value = data.owner || "Unassigned";
-      document.getElementById("drawerValue").value = data.value || "";
-      document.getElementById("drawerNotes").value = data.notes || "";
+      
+      const dir = countyDirectory[name] || { pop: 0, taxEst: 0, dmvEst: 0, taxContact: "N/A", ccContact: "N/A", dcContact: "N/A" };
+      document.getElementById("drawerPopulation").innerText = `Population: ${dir.pop.toLocaleString()} | Est. Tax+DMV AGR: $${(dir.taxEst + dir.dmvEst).toLocaleString(undefined, {maximumFractionDigits:0})}`;
+      document.getElementById("taxContactDisplay").innerText = `Contact: ${dir.taxContact}`;
+      document.getElementById("taxMetaDisplay").innerText = `Est. Tax AGR: $${dir.taxEst.toLocaleString(undefined, {maximumFractionDigits:0})} | DMV AGR: $${dir.dmvEst.toLocaleString(undefined, {maximumFractionDigits:0})}`;
+      document.getElementById("ccContactDisplay").innerText = `Contact: ${dir.ccContact}`;
+      document.getElementById("dcContactDisplay").innerText = `Contact: ${dir.dcContact}`;
+
+      const data = mapData.counties[name] || {
+        status: "gray",
+        tax: { owner: "Unassigned", status: "gray", notes: "" },
+        cc: { owner: "Unassigned", status: "gray", value: "", notes: "" },
+        dc: { owner: "Unassigned", status: "gray", value: "", notes: "" }
+      };
+
+      document.getElementById("drawerMasterStatus").value = data.status || "gray";
+      
+      document.getElementById("taxOwner").value = data.tax.owner || "Unassigned";
+      document.getElementById("taxStatus").value = data.tax.status || "gray";
+      document.getElementById("taxNotes").value = data.tax.notes || "";
+
+      document.getElementById("ccOwner").value = data.cc.owner || "Unassigned";
+      document.getElementById("ccStatus").value = data.cc.status || "gray";
+      document.getElementById("ccValue").value = data.cc.value || "";
+      document.getElementById("ccNotes").value = data.cc.notes || "";
+
+      document.getElementById("dcOwner").value = data.dc.owner || "Unassigned";
+      document.getElementById("dcStatus").value = data.dc.status || "gray";
+      document.getElementById("dcValue").value = data.dc.value || "";
+      document.getElementById("dcNotes").value = data.dc.notes || "";
 
       document.getElementById("countyDrawer").classList.add("open");
       if (geojsonCache) populateCountyList(geojsonCache);
@@ -528,14 +655,56 @@
       if (geojsonCache) populateCountyList(geojsonCache);
     }
 
-    function updateSelectedCountyFromDrawer() {
+    function updateMasterStatusFromDrawer() {
       if (!selectedCountyId) return;
-      const status = document.getElementById("drawerStatus").value;
-      const owner = document.getElementById("drawerOwner").value;
-      const value = document.getElementById("drawerValue").value;
-      const notes = document.getElementById("drawerNotes").value;
+      const status = document.getElementById("drawerMasterStatus").value;
+      if (!mapData.counties[selectedCountyId]) {
+        mapData.counties[selectedCountyId] = { tax: {}, cc: {}, dc: {} };
+      }
+      mapData.counties[selectedCountyId].status = status;
+      mapData.counties[selectedCountyId].tax.status = status;
+      saveLocalState();
+      renderCountiesOnMap();
+      filterCountyList();
+      pushCloudState();
+    }
 
-      mapData.counties[selectedCountyId] = { status, owner, value, notes };
+    function updateDeptFromDrawer() {
+      if (!selectedCountyId) return;
+      if (!mapData.counties[selectedCountyId]) {
+        mapData.counties[selectedCountyId] = {};
+      }
+
+      mapData.counties[selectedCountyId].tax = {
+        owner: document.getElementById("taxOwner").value,
+        status: document.getElementById("taxStatus").value,
+        notes: document.getElementById("taxNotes").value
+      };
+
+      mapData.counties[selectedCountyId].cc = {
+        owner: document.getElementById("ccOwner").value,
+        status: document.getElementById("ccStatus").value,
+        value: document.getElementById("ccValue").value,
+        notes: document.getElementById("ccNotes").value
+      };
+
+      mapData.counties[selectedCountyId].dc = {
+        owner: document.getElementById("dcOwner").value,
+        status: document.getElementById("dcStatus").value,
+        value: document.getElementById("dcValue").value,
+        notes: document.getElementById("dcNotes").value
+      };
+
+      // Set master status to highest priority department status
+      const statuses = [mapData.counties[selectedCountyId].tax.status, mapData.counties[selectedCountyId].cc.status, mapData.counties[selectedCountyId].dc.status];
+      let bestStatus = "gray";
+      if (statuses.includes("orange")) bestStatus = "orange";
+      else if (statuses.includes("yellow")) bestStatus = "yellow";
+      else if (statuses.includes("green")) bestStatus = "green";
+
+      mapData.counties[selectedCountyId].status = bestStatus;
+      document.getElementById("drawerMasterStatus").value = bestStatus;
+
       saveLocalState();
       renderCountiesOnMap();
       filterCountyList();
@@ -584,7 +753,6 @@
       }
     }
 
-    // Push state to JSONBin.io
     async function pushCloudState() {
       updateSyncStatusUI("Saving...", false);
       const payload = {
@@ -608,7 +776,6 @@
       }
     }
 
-    // Pull state from JSONBin.io
     async function pullCloudState() {
       try {
         const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}/latest`, {
