@@ -125,7 +125,7 @@
       <span>🗺️ Texas Sales Opportunities Map</span>
       <div class="sync-badge" id="syncBadge">
         <div class="sync-dot" id="syncDot"></div>
-        <span id="syncStatusText">Cloud Synced (Google Sheet)</span>
+        <span id="syncStatusText">Cloud Synced (npoint.io)</span>
       </div>
     </div>
     <div class="header-controls">
@@ -234,8 +234,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Google Sheet Cloud Endpoint (Apps Script Web App URL)</label>
-          <input type="text" class="form-control" id="syncEndpointInput" value="https://script.google.com/macros/s/AKfycbx7APcpsS9QMV1yh978BXdXqma0XuW8BaviPkSH8yMRO0uVK6ecuGG8BQR07FOKTdXgpg/exec">
+          <label>npoint.io JSON Bin URL</label>
+          <input type="text" class="form-control" id="syncEndpointInput" value="https://api.npoint.io/e95746af6f04173579e6">
         </div>
         <div style="display: flex; gap: 10px;">
           <button class="btn btn-success" style="flex:1;" onclick="manualSyncNow()">🔄 Sync Now</button>
@@ -249,8 +249,8 @@
   </div>
 
   <script>
-    const CORRECT_PASSWORD = "govwindow2026"; // Change this password anytime if needed
-    const TEAM_SYNC_ENDPOINT = "https://script.google.com/macros/s/AKfycbx7APcpsS9QMV1yh978BXdXqma0XuW8BaviPkSH8yMRO0uVK6ecuGG8BQR07FOKTdXgpg/exec";
+    const CORRECT_PASSWORD = "govwindow2026";
+    const TEAM_SYNC_ENDPOINT = "https://api.npoint.io/e95746af6f04173579e6";
     
     let activeUser = "Michael";
     let activePaintColor = "green";
@@ -274,7 +274,6 @@
     const defaultInitialOranges = ["Wichita", "Wise", "Denton", "Collin", "Titus", "Orange"];
 
     window.addEventListener("DOMContentLoaded", async () => {
-      // Check if password was already authenticated in this session
       if (safeGetItem("tx_map_auth") === "true") {
         document.getElementById("passwordModal").classList.remove("open");
       }
@@ -282,6 +281,9 @@
       loadLocalState();
       renderPaintToolbar();
       renderLegend();
+      
+      // Pull initial cloud state first, then render map
+      await pullCloudState();
       initMap();
       setupSyncPolling();
     });
@@ -374,7 +376,7 @@
 
         renderCountiesOnMap();
         populateCountyList(geojsonCache);
-        updateSyncStatusUI("Synced", true);
+        updateSyncStatusUI("Cloud Synced (npoint.io)", true);
       } catch (err) {
         console.error("Error loading map topology:", err);
       }
@@ -613,12 +615,11 @@
 
       try {
         await fetch(endpoint, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-        updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
+        updateSyncStatusUI("Cloud Synced (npoint.io)", true);
       } catch (err) {
         updateSyncStatusUI("Offline / Saved Locally", false);
       }
@@ -631,20 +632,14 @@
       try {
         const res = await fetch(endpoint);
         const data = await res.json();
-        if (data && data.counties) {
-          let changed = false;
-          for (let c in data.counties) {
-            if (!mapData.counties[c] || JSON.stringify(mapData.counties[c]) !== JSON.stringify(data.counties[c])) {
-              mapData.counties[c] = data.counties[c];
-              changed = true;
-            }
-          }
-          if (changed) {
-            saveLocalState();
+        if (data && data.counties && Object.keys(data.counties).length > 0) {
+          mapData.counties = data.counties;
+          saveLocalState();
+          if (gSelection) {
             renderCountiesOnMap();
             filterCountyList();
           }
-          updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
+          updateSyncStatusUI("Cloud Synced (npoint.io)", true);
         }
       } catch (err) {}
     }
