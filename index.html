@@ -1,4 +1,5 @@
-async function pushCloudState() {
+// Push data via JSONP script tag injection (100% reliable in Incognito & across browsers)
+    function pushCloudState() {
       const endpoint = document.getElementById("syncEndpointInput").value || TEAM_SYNC_ENDPOINT;
       if (!endpoint) return;
 
@@ -9,26 +10,33 @@ async function pushCloudState() {
         counties: mapData.counties
       };
 
-      try {
-        await fetch(endpoint, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify(payload)
-        });
-        updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
-      } catch (err) {
-        updateSyncStatusUI("Offline / Saved Locally", false);
-      }
+      // Encode payload into URL parameter for JSONP transmission
+      const jsonStr = encodeURIComponent(JSON.stringify(payload));
+      
+      window.handleMapSaveResponse = function(response) {
+        if (response && response.status === "success") {
+          updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
+        } else {
+          updateSyncStatusUI("Offline / Saved Locally", false);
+        }
+      };
+
+      const oldScript = document.getElementById("jsonpPushScript");
+      if (oldScript) oldScript.remove();
+
+      const script = document.createElement("script");
+      script.id = "jsonpPushScript";
+      script.src = `${endpoint}?action=save&payload=${jsonStr}&callback=handleMapSaveResponse&_=${Date.now()}`;
+      script.onerror = () => updateSyncStatusUI("Offline / Saved Locally", false);
+      document.body.appendChild(script);
     }
 
-    async function pullCloudState() {
+    // Pull data via JSONP script tag injection
+    function pullCloudState() {
       const endpoint = document.getElementById("syncEndpointInput").value || TEAM_SYNC_ENDPOINT;
       if (!endpoint) return;
 
-      try {
-        const res = await fetch(endpoint);
-        const data = await res.json();
+      window.handleMapDataResponse = function(data) {
         if (data && data.counties && Object.keys(data.counties).length > 0) {
           mapData.counties = data.counties;
           saveLocalState();
@@ -38,7 +46,14 @@ async function pushCloudState() {
           }
           updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
         }
-      } catch (err) {
-        // Fallback to local storage if network blocks the read
-      }
+      };
+
+      const oldScript = document.getElementById("jsonpScript");
+      if (oldScript) oldScript.remove();
+
+      const script = document.createElement("script");
+      script.id = "jsonpScript";
+      script.src = `${endpoint}?action=load&callback=handleMapDataResponse&_=${Date.now()}`;
+      script.onerror = () => updateSyncStatusUI("Offline / Saved Locally", false);
+      document.body.appendChild(script);
     }
