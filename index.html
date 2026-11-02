@@ -381,7 +381,6 @@
         const res = await fetch("directory_data.json");
         countyDirectory = await res.json();
       } catch(e) {
-        // Fallback default
         countyDirectory = {};
       }
     }
@@ -439,7 +438,7 @@
           gSelection.attr("transform", event.transform);
         });
         
-      // CRUCIAL: Disable d3 double-click zoom so dblclick opens the county drawer!
+      // Crucial: Disables D3 double-click zoom so dblclick opens drawer
       svgSelection.call(zoom).on("dblclick.zoom", null);
 
       try {
@@ -608,14 +607,12 @@
             <div style="font-size:11px; color:var(--text-muted);">Rep: ${rep}</div>
           </div>
           <div style="display:flex; align-items:center; gap:6px;">
-            <!-- Quick Status / Color Selector -->
             <select class="filter-select" style="font-size:11px; padding:2px; font-weight:600;" onchange="event.stopPropagation(); quickChangeStatus('${name}', this.value)">
               <option value="green" ${data.status==="green"?"selected":""}>🟢 Cust</option>
               <option value="yellow" ${data.status==="yellow"?"selected":""}>🟡 Pipe</option>
               <option value="orange" ${data.status==="orange"?"selected":""}>🟠 Sign</option>
               <option value="gray" ${data.status==="gray"?"selected":""}>⚪ Gray</option>
             </select>
-            <!-- Quick Rep Selector -->
             <select class="filter-select" style="font-size:11px; padding:2px;" onchange="event.stopPropagation(); quickChangeOwner('${name}', this.value)">
               <option value="Unassigned" ${rep==="Unassigned"?"selected":""}>Unassigned</option>
               <option value="Michael" ${rep==="Michael"?"selected":""}>Michael</option>
@@ -745,7 +742,6 @@
         notes: document.getElementById("dcNotes").value
       };
 
-      // Calculate master status based on highest priority department
       const statuses = [
         mapData.counties[selectedCountyId].tax.status,
         mapData.counties[selectedCountyId].cc.status,
