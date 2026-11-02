@@ -180,7 +180,7 @@
       <div class="drawer-body">
         
         <div class="form-group">
-          <label>Master County Status</label>
+          <label>Master County Status (Derived from Depts)</label>
           <select class="form-control" id="drawerMasterStatus" onchange="updateMasterStatusFromDrawer()">
             <option value="green">Current Customers (Green)</option>
             <option value="yellow">Pipeline (Yellow)</option>
@@ -253,7 +253,7 @@
           <div class="dept-grid">
             <div class="form-group">
               <label>Manual AGR ($)</label>
-              <input type="text" class="form-control" id="ccValue" placeholder="e.g. $45,000" oninput="updateDeptFromDrawer()">
+              <input type="text" class="form-control" id="ccValue" placeholder="e.g. 45000" oninput="updateDeptFromDrawer()">
             </div>
             <div class="form-group">
               <label>Notes</label>
@@ -291,7 +291,7 @@
           <div class="dept-grid">
             <div class="form-group">
               <label>Manual AGR ($)</label>
-              <input type="text" class="form-control" id="dcValue" placeholder="e.g. $30,000" oninput="updateDeptFromDrawer()">
+              <input type="text" class="form-control" id="dcValue" placeholder="e.g. 30000" oninput="updateDeptFromDrawer()">
             </div>
             <div class="form-group">
               <label>Notes</label>
@@ -378,7 +378,7 @@
 
     async function loadDirectoryData() {
       try {
-        const res = await fetch("directory_data.json");
+        const res = await fetch("directory_data.json?_=" + Date.now());
         countyDirectory = await res.json();
       } catch(e) {
         countyDirectory = {};
@@ -403,7 +403,7 @@
     }
 
     function loadLocalState() {
-      const saved = safeGetItem("tx_sales_map_departments_v2");
+      const saved = safeGetItem("tx_sales_map_departments_v3");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -413,7 +413,7 @@
     }
 
     function saveLocalState() {
-      safeSetItem("tx_sales_map_departments_v2", JSON.stringify(mapData));
+      safeSetItem("tx_sales_map_departments_v3", JSON.stringify(mapData));
     }
 
     async function initMap() {
@@ -438,7 +438,6 @@
           gSelection.attr("transform", event.transform);
         });
         
-      // Crucial: Disables D3 double-click zoom so dblclick opens drawer
       svgSelection.call(zoom).on("dblclick.zoom", null);
 
       try {
@@ -660,18 +659,25 @@
       document.getElementById("drawerTitle").innerText = `${name} County`;
       
       const dir = countyDirectory[name] || { pop: 0, taxEst: 0, dmvEst: 0, taxContact: "N/A", ccContact: "N/A", dcContact: "N/A" };
-      document.getElementById("drawerPopulation").innerText = `Population: ${dir.pop.toLocaleString()} | Est. Tax+DMV AGR: $${(dir.taxEst + dir.dmvEst).toLocaleString(undefined, {maximumFractionDigits:0})}`;
-      document.getElementById("taxContactDisplay").innerText = `Contact: ${dir.taxContact}`;
-      document.getElementById("taxMetaDisplay").innerText = `Est. Tax AGR: $${dir.taxEst.toLocaleString(undefined, {maximumFractionDigits:0})} | DMV AGR: $${dir.dmvEst.toLocaleString(undefined, {maximumFractionDigits:0})}`;
-      document.getElementById("ccContactDisplay").innerText = `Contact: ${dir.ccContact}`;
-      document.getElementById("dcContactDisplay").innerText = `Contact: ${dir.dcContact}`;
-
+      
       const data = mapData.counties[name] || {
         status: "gray",
         tax: { owner: "Unassigned", status: "gray", notes: "" },
         cc: { owner: "Unassigned", status: "gray", value: "", notes: "" },
         dc: { owner: "Unassigned", status: "gray", value: "", notes: "" }
       };
+
+      // Calculate total AGR including manual entries if applied
+      let manualCC = parseFloat(String(data.cc && data.cc.value || "0").replace(/[^0-9.]/g, "")) || 0;
+      let manualDC = parseFloat(String(data.dc && data.dc.value || "0").replace(/[^0-9.]/g, "")) || 0;
+      let totalEstAGR = dir.taxEst + dir.dmvEst + manualCC + manualDC;
+
+      document.getElementById("drawerPopulation").innerText = `Population: ${dir.pop.toLocaleString()} | Total AGR (Est + Manual): $${totalEstAGR.toLocaleString(undefined, {maximumFractionDigits:0})}`;
+      
+      document.getElementById("taxContactDisplay").innerText = `Contact: ${dir.taxContact}`;
+      document.getElementById("taxMetaDisplay").innerText = `Est. Tax AGR: $${dir.taxEst.toLocaleString(undefined, {maximumFractionDigits:0})} | DMV AGR: $${dir.dmvEst.toLocaleString(undefined, {maximumFractionDigits:0})}`;
+      document.getElementById("ccContactDisplay").innerText = `Contact: ${dir.ccContact}`;
+      document.getElementById("dcContactDisplay").innerText = `Contact: ${dir.dcContact}`;
 
       document.getElementById("drawerMasterStatus").value = data.status || "gray";
       
@@ -742,6 +748,7 @@
         notes: document.getElementById("dcNotes").value
       };
 
+      // HIGHLIGHT BASED ON ANY OF THE THREE DEPARTMENTS (Highest Priority: orange > yellow > green > gray)
       const statuses = [
         mapData.counties[selectedCountyId].tax.status,
         mapData.counties[selectedCountyId].cc.status,
@@ -754,6 +761,13 @@
 
       mapData.counties[selectedCountyId].status = bestStatus;
       document.getElementById("drawerMasterStatus").value = bestStatus;
+
+      // Recalculate dynamic top AGR including manual entries
+      const dir = countyDirectory[selectedCountyId] || { pop: 0, taxEst: 0, dmvEst: 0 };
+      let manualCC = parseFloat(String(mapData.counties[selectedCountyId].cc.value || "0").replace(/[^0-9.]/g, "")) || 0;
+      let manualDC = parseFloat(String(mapData.counties[selectedCountyId].dc.value || "0").replace(/[^0-9.]/g, "")) || 0;
+      let totalEstAGR = dir.taxEst + dir.dmvEst + manualCC + manualDC;
+      document.getElementById("drawerPopulation").innerText = `Population: ${dir.pop.toLocaleString()} | Total AGR (Est + Manual): $${totalEstAGR.toLocaleString(undefined, {maximumFractionDigits:0})}`;
 
       saveLocalState();
       renderCountiesOnMap();
