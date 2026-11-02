@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Texas Sales - Mobile Companion</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --accent: #2563eb;
+      --green: #16a34a;
+      --yellow: #ca8a04;
+      --orange: #ea580c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 40px; }
+
+    header { background: #1e293b; color: white; padding: 14px 16px; position: sticky; top: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    
+    .sync-pill { font-size: 11px; padding: 3px 8px; border-radius: 20px; background: rgba(255,255,255,0.15); display: flex; align-items: center; gap: 5px; }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
+    .sync-dot.offline { background: #eab308; }
+
+    .controls-container { padding: 12px 16px; background: white; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; position: sticky; top: 53px; z-index: 40; }
+    .search-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; outline: none; background: #f8fafc; }
+    .filter-group { display: flex; gap: 6px; }
+    .filter-select { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: white; }
+
+    .county-feed { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .county-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; }
+    
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .county-name { font-size: 17px; font-weight: 700; color: #1e293b; }
+    .county-pop { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    
+    .status-badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; color: white; text-transform: uppercase; letter-spacing: 0.3px; }
+    .status-green { background: var(--green); }
+    .status-yellow { background: var(--yellow); }
+    .status-orange { background: var(--orange); }
+    .status-gray { background: #cbd5e1; color: #475569; }
+
+    .card-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 8px; font-size: 12px; }
+    .detail-label { color: var(--muted); text-transform: uppercase; font-size: 10px; font-weight: 700; }
+    .detail-val { font-weight: 600; color: #1e293b; margin-top: 1px; }
+
+    .card-actions { display: flex; gap: 8px; align-items: center; }
+    .action-select { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: white; font-weight: 500; }
+    
+    .btn-edit { background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+    /* Modal Sheet for Quick Editing Departments */
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(2px); }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-sheet { background: white; width: 100%; max-height: 90vh; border-top-left-radius: 16px; border-top-right-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); }
+    .modal-backdrop.open .modal-sheet { transform: translateY(0); }
+    
+    .sheet-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .sheet-title { font-size: 18px; font-weight: 700; }
+    .close-btn { background: #e2e8f0; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer; }
+
+    .dept-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .dept-heading { font-weight: 700; font-size: 13px; color: #1e293b; }
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .form-group { display: flex; flex-direction: column; gap: 3px; }
+    .form-group label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .form-control { padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; background: white; }
+
+    .save-btn { background: var(--green); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-title">
+      <span>📱 Mobile Territory Feed</span>
+    </div>
+    <div class="sync-pill">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncText">Synced</span>
+    </div>
+  </header>
+
+  <div class="controls-container">
+    <input type="text" class="search-input" id="mobileSearch" placeholder="Search county..." oninput="renderFeed()">
+    <div class="filter-group">
+      <select class="filter-select" id="mobileOwnerFilter" onchange="renderFeed()">
+        <option value="ALL">All Owners</option>
+        <option value="Michael">Michael</option>
+        <option value="Forrest">Forrest</option>
+        <option value="Zach">Zach</option>
+        <option value="Unassigned">Unassigned</option>
+      </select>
+      <select class="filter-select" id="mobileStatusFilter" onchange="renderFeed()">
+        <option value="ALL">All Statuses</option>
+        <option value="green">Customers</option>
+        <option value="yellow">Pipeline</option>
+        <option value="orange">Sign Quick</option>
+        <option value="gray">Untargeted</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="county-feed" id="countyFeed"></div>
+
+  <!-- Edit Sheet Modal -->
+  <div class="modal-backdrop" id="editModal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <div>
+          <h3 id="modalCountyName">County Name</h3>
+          <div id="modalPopSub" style="font-size:12px; color:var(--muted);">Population: 0</div>
+        </div>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+
+      <!-- Tax Department -->
+      <div class="dept-box">
+        <div class="dept-heading">🏛️ Tax Assessor-Collector</div>
+        <div style="font-size:11px; color:var(--muted);" id="modalTaxContact">Contact: N/A</div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>Owner</label>
+            <select class="form-control" id="modalTaxOwner">
+              <option value="Unassigned">Unassigned</option>
+              <option value="Michael">Michael</option>
+              <option value="Forrest">Forrest</option>
+              <option value="Zach">Zach</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" id="modalTaxStatus">
+              <option value="green">Customer</option>
+              <option value="yellow">Pipeline</option>
+              <option value="orange">Sign Quick</option>
+              <option value="gray">Untargeted</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <input type="text" class="form-control" id="modalTaxNotes" placeholder="Notes...">
+        </div>
+      </div>
+
+      <!-- County Clerk -->
+      <div class="dept-box">
+        <div class="dept-heading">📜 County Clerk</div>
+        <div style="font-size:11px; color:var(--muted);" id="modalCcContact">Contact: N/A</div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>Owner</label>
+            <select class="form-control" id="modalCcOwner">
+              <option value="Unassigned">Unassigned</option>
+              <option value="Michael">Michael</option>
+              <option value="Forrest">Forrest</option>
+              <option value="Zach">Zach</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" id="modalCcStatus">
+              <option value="green">Customer</option>
+              <option value="yellow">Pipeline</option>
+              <option value="orange">Sign Quick</option>
+              <option value="gray">Untargeted</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>Manual AGR ($)</label>
+            <input type="text" class="form-control" id="modalCcValue" placeholder="e.g. 45000">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <input type="text" class="form-control" id="modalCcNotes" placeholder="Notes...">
+          </div>
+        </div>
+      </div>
+
+      <!-- District Clerk -->
+      <div class="dept-box">
+        <div class="dept-heading">⚖️ District Clerk</div>
+        <div style="font-size:11px; color:var(--muted);" id="modalDcContact">Contact: N/A</div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>Owner</label>
+            <select class="form-control" id="modalDcOwner">
+              <option value="Unassigned">Unassigned</option>
+              <option value="Michael">Michael</option>
+              <option value="Forrest">Forrest</option>
+              <option value="Zach">Zach</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" id="modalDcStatus">
+              <option value="green">Customer</option>
+              <option value="yellow">Pipeline</option>
+              <option value="orange">Sign Quick</option>
+              <option value="gray">Untargeted</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>Manual AGR ($)</label>
+            <input type="text" class="form-control" id="modalDcValue" placeholder="e.g. 30000">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <input type="text" class="form-control" id="modalDcNotes" placeholder="Notes...">
+          </div>
+        </div>
+      </div>
+
+      <button class="save-btn" onclick="saveModalChanges()">Save Changes</button>
+    </div>
+  </div>
+
+  <script>
+    const JSONBIN_ID = "6ae8d6b9ffd5d16053a03d49";
+    const JSONBIN_KEY = "$2a$10$hqAEYcasWlQqDVem16cGA.2wbiSQQbTLmYl7w.WRhnmv8VdahVlpu";
+
+    let countyDirectory = {};
+    let mapData = { counties: {} };
+    let activeCountyModal = null;
+    let syncInterval = null;
+
+    const statusLabels = { green: "Customer", yellow: "Pipeline", orange: "Sign Quick", gray: "Untargeted" };
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      await loadDirectory();
+      await pullCloudState();
+      renderFeed();
+      setupPolling();
+    });
+
+    async function loadDirectory() {
+      try {
+        const res = await fetch("directory_data.json?_=" + Date.now());
+        countyDirectory = await res.json();
+      } catch(e) { countyDirectory = {}; }
+    }
+
+    async function pullCloudState() {
+      try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}/latest`, {
+          headers: { "X-Master-Key": JSONBIN_KEY }
+        });
+        const json = await res.json();
+        if (json.record && json.record.counties) {
+          mapData.counties = json.record.counties;
+          renderFeed();
+          updateSyncUI(true);
+        }
+      } catch(e) { updateSyncUI(false); }
+    }
+
+    async function pushCloudState() {
+      updateSyncUI(false, "Saving...");
+      try {
+        await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_KEY },
+          body: JSON.stringify({ timestamp: new Date().toISOString(), counties: mapData.counties })
+        });
+        updateSyncUI(true);
+      } catch(e) { updateSyncUI(false, "Offline"); }
+    }
+
+    function setupPolling() {
+      if (syncInterval) clearInterval(syncInterval);
+      syncInterval = setInterval(pullCloudState, 10000);
+    }
+
+    function updateSyncUI(isSynced, customText) {
+      const dot = document.getElementById("syncDot");
+      const txt = document.getElementById("syncText");
+      dot.className = isSynced ? "sync-dot" : "sync-dot offline";
+      txt.innerText = customText || (isSynced ? "Synced" : "Offline");
+    }
+
+    function renderFeed() {
+      const container = document.getElementById("countyFeed");
+      const search = document.getElementById("mobileSearch").value.toLowerCase();
+      const ownerFilter = document.getElementById("mobileOwnerFilter").value;
+      const statusFilter = document.getElementById("mobileStatusFilter").value;
+
+      container.innerHTML = "";
+
+      const keys = Object.keys(countyDirectory).sort();
+      keys.forEach(name => {
+        const dir = countyDirectory[name] || { pop: 0, taxEst: 0, dmvEst: 0 };
+        const data = mapData.counties[name] || { status: "gray", tax: { owner: "Unassigned" }, cc: {}, dc: {} };
+        const rep = (data.tax && data.tax.owner) || "Unassigned";
+        const status = data.status || "gray";
+
+        if (search && !name.toLowerCase().includes(search)) return;
+        if (ownerFilter !== "ALL" && rep !== ownerFilter) return;
+        if (statusFilter !== "ALL" && status !== statusFilter) return;
+
+        let manualCC = parseFloat(String(data.cc && data.cc.value || "0").replace(/[^0-9.]/g, "")) || 0;
+        let manualDC = parseFloat(String(data.dc && data.dc.value || "0").replace(/[^0-9.]/g, "")) || 0;
+        let totalAGR = (dir.taxEst || 0) + (dir.dmvEst || 0) + manualCC + manualDC;
+
+        const card = document.createElement("div");
+        card.className = "county-card";
+        card.innerHTML = `
+          <div class="card-top">
+            <div>
+              <div class="county-name">${name} County</div>
+              <div class="county-pop">Pop: ${(dir.pop||0).toLocaleString()} | Total AGR: $${totalAGR.toLocaleString(undefined, {maximumFractionDigits:0})}</div>
+            </div>
+            <span class="status-badge status-${status}">${statusLabels[status] || status}</span>
+          </div>
+          <div class="card-details">
+            <div>
+              <div class="detail-label">Tax Contact</div>
+              <div class="detail-val">${dir.taxContact || 'N/A'}</div>
+            </div>
+            <div>
+              <div class="detail-label">Tax Owner</div>
+              <div class="detail-val">${rep}</div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <select class="action-select" onchange="quickStatusChange('${name}', this.value)">
+              <option value="green" ${status==="green"?"selected":""}>🟢 Customer</option>
+              <option value="yellow" ${status==="yellow"?"selected":""}>🟡 Pipeline</option>
+              <option value="orange" ${status==="orange"?"selected":""}>🟠 Sign Quick</option>
+              <option value="gray" ${status==="gray"?"selected":""}>⚪ Untargeted</option>
+            </select>
+            <button class="btn-edit" onclick="openModal('${name}')">Edit Depts</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function quickStatusChange(name, val) {
+      if (!mapData.counties[name]) {
+        mapData.counties[name] = { status: val, tax: { owner: "Unassigned", status: val, notes: "" }, cc: {}, dc: {} };
+      } else {
+        mapData.counties[name].status = val;
+        if (!mapData.counties[name].tax) mapData.counties[name].tax = { owner: "Unassigned", notes: "" };
+        mapData.counties[name].tax.status = val;
+      }
+      pushCloudState();
+      renderFeed();
+    }
+
+    function openModal(name) {
+      activeCountyModal = name;
+      const dir = countyDirectory[name] || {};
+      const data = mapData.counties[name] || {
+        tax: { owner: "Unassigned", status: "gray", notes: "" },
+        cc: { owner: "Unassigned", status: "gray", value: "", notes: "" },
+        dc: { owner: "Unassigned", status: "gray", value: "", notes: "" }
+      };
+
+      document.getElementById("modalCountyName").innerText = `${name} County`;
+      document.getElementById("modalPopSub").innerText = `Population: ${(dir.pop||0).toLocaleString()}`;
+      
+      document.getElementById("modalTaxContact").innerText = `Contact: ${dir.taxContact || 'N/A'}`;
+      document.getElementById("modalTaxOwner").value = data.tax?.owner || "Unassigned";
+      document.getElementById("modalTaxStatus").value = data.tax?.status || "gray";
+      document.getElementById("modalTaxNotes").value = data.tax?.notes || "";
+
+      document.getElementById("modalCcContact").innerText = `Contact: ${dir.ccContact || 'N/A'}`;
+      document.getElementById("modalCcOwner").value = data.cc?.owner || "Unassigned";
+      document.getElementById("modalCcStatus").value = data.cc?.status || "gray";
+      document.getElementById("modalCcValue").value = data.cc?.value || "";
+      document.getElementById("modalCcNotes").value = data.cc?.notes || "";
+
+      document.getElementById("modalDcContact").innerText = `Contact: ${dir.dcContact || 'N/A'}`;
+      document.getElementById("modalDcOwner").value = data.dc?.owner || "Unassigned";
+      document.getElementById("modalDcStatus").value = data.dc?.status || "gray";
+      document.getElementById("modalDcValue").value = data.dc?.value || "";
+      document.getElementById("modalDcNotes").value = data.dc?.notes || "";
+
+      document.getElementById("editModal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("editModal").classList.remove("open");
+      activeCountyModal = null;
+    }
+
+    function saveModalChanges() {
+      if (!activeCountyModal) return;
+      const name = activeCountyModal;
+
+      if (!mapData.counties[name]) mapData.counties[name] = {};
+
+      mapData.counties[name].tax = {
+        owner: document.getElementById("modalTaxOwner").value,
+        status: document.getElementById("modalTaxStatus").value,
+        notes: document.getElementById("modalTaxNotes").value
+      };
+
+      mapData.counties[name].cc = {
+        owner: document.getElementById("modalCcOwner").value,
+        status: document.getElementById("modalCcStatus").value,
+        value: document.getElementById("modalCcValue").value,
+        notes: document.getElementById("modalCcNotes").value
+      };
+
+      mapData.counties[name].dc = {
+        owner: document.getElementById("modalDcOwner").value,
+        status: document.getElementById("modalDcStatus").value,
+        value: document.getElementById("modalDcValue").value,
+        notes: document.getElementById("modalDcNotes").value
+      };
+
+      // Calculate master status priority across all 3 depts
+      const statuses = [
+        mapData.counties[name].tax?.status || "gray",
+        mapData.counties[name].cc?.status || "gray",
+        mapData.counties[name].dc?.status || "gray"
+      ];
+      let best = "gray";
+      if (statuses.includes("orange")) best = "orange";
+      else if (statuses.includes("yellow")) best = "yellow";
+      else if (statuses.includes("green")) best = "green";
+
+      mapData.counties[name].status = best;
+
+      closeModal();
+      pushCloudState();
+      renderFeed();
+    }
+  </script>
+</body>
+</html>
