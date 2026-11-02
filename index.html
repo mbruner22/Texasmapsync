@@ -114,11 +114,11 @@
       <span>🗺️ Texas Sales Opportunities Map</span>
       <div class="sync-badge" id="syncBadge">
         <div class="sync-dot" id="syncDot"></div>
-        <span id="syncStatusText">Cloud Synced</span>
+        <span id="syncStatusText">Cloud Synced (JSONBin)</span>
       </div>
     </div>
     <div class="header-controls">
-      <button class="btn btn-secondary" onclick="openShareModal()">⚙️ Cloud Settings</button>
+      <button class="btn btn-secondary" onclick="openShareModal()">👤 User Settings</button>
       <button class="btn btn-secondary" onclick="exportPNG()">📥 Export PNG</button>
       <button class="btn" onclick="toggleFullscreen()">⛶ Pop Out Full Screen</button>
     </div>
@@ -203,32 +203,24 @@
     </div>
   </div>
 
-  <!-- Share & Cloud Settings Modal -->
+  <!-- User Settings Modal -->
   <div class="modal-backdrop" id="shareModal">
     <div class="modal">
       <div class="modal-header">
-        <h3>⚙️ Cloud Sync & User Settings</h3>
+        <h3>👤 Active User Settings</h3>
         <button class="btn btn-secondary" style="padding: 2px 8px;" onclick="closeShareModal()">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>Active User (Your Name)</label>
+          <label>Active Rep (Your Name)</label>
           <select class="form-control" id="activeUserSelect" onchange="changeActiveUser()">
             <option value="Michael">Michael (VP Sales)</option>
             <option value="Forrest">Forrest</option>
             <option value="Zach">Zach</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>JSONBin.io Bin ID</label>
-          <input type="text" class="form-control" id="binIdInput" placeholder="Paste your Bin ID here...">
-        </div>
-        <div class="form-group">
-          <label>JSONBin.io Master Key ($2a$...)</label>
-          <input type="password" class="form-control" id="apiKeyInput" placeholder="Paste your API Master Key here...">
-        </div>
         <div style="display: flex; gap: 10px;">
-          <button class="btn btn-success" style="flex:1;" onclick="saveCloudConfig()">💾 Save & Sync</button>
+          <button class="btn btn-success" style="flex:1;" onclick="manualSyncNow()">🔄 Sync Now</button>
           <button class="btn btn-secondary" onclick="exportJSONBackup()">💾 Backup JSON</button>
         </div>
       </div>
@@ -240,6 +232,8 @@
 
   <script>
     const CORRECT_PASSWORD = "govwindow2026";
+    const JSONBIN_ID = "6ae8d6b9ffd5d16053a03d49";
+    const JSONBIN_KEY = "$2a$10$hqAEYcasWlQqDVem16cGA.2wbiSQQbTLmYl7w.WRhnmv8VdahVlpu";
     
     let activeUser = "Michael";
     let activePaintColor = "green";
@@ -266,12 +260,6 @@
       if (safeGetItem("tx_map_auth") === "true") {
         document.getElementById("passwordModal").classList.remove("open");
       }
-
-      // Load saved JSONBin credentials if present
-      const savedBinId = safeGetItem("jsonbin_id");
-      const savedApiKey = safeGetItem("jsonbin_key");
-      if (savedBinId) document.getElementById("binIdInput").value = savedBinId;
-      if (savedApiKey) document.getElementById("apiKeyInput").value = savedApiKey;
 
       loadLocalState();
       renderPaintToolbar();
@@ -300,7 +288,7 @@
     }
 
     function loadLocalState() {
-      const saved = safeGetItem("tx_sales_map_clean_state");
+      const saved = safeGetItem("tx_sales_map_jsonbin_state");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -310,7 +298,7 @@
     }
 
     function saveLocalState() {
-      safeSetItem("tx_sales_map_clean_state", JSON.stringify(mapData));
+      safeSetItem("tx_sales_map_jsonbin_state", JSON.stringify(mapData));
     }
 
     async function initMap() {
@@ -370,7 +358,7 @@
 
         renderCountiesOnMap();
         populateCountyList(geojsonCache);
-        updateSyncStatusUI("Cloud Synced", true);
+        updateSyncStatusUI("Cloud Synced (JSONBin)", true);
       } catch (err) {
         console.error("Error loading map topology:", err);
       }
@@ -598,10 +586,6 @@
 
     // Push state to JSONBin.io
     async function pushCloudState() {
-      const binId = document.getElementById("binIdInput").value.trim();
-      const apiKey = document.getElementById("apiKeyInput").value.trim();
-      if (!binId || !apiKey) return;
-
       updateSyncStatusUI("Saving...", false);
       const payload = {
         updatedBy: activeUser,
@@ -610,15 +594,15 @@
       };
 
       try {
-        await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+        await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "X-Master-Key": apiKey
+            "X-Master-Key": JSONBIN_KEY
           },
           body: JSON.stringify(payload)
         });
-        updateSyncStatusUI("Cloud Synced", true);
+        updateSyncStatusUI("Cloud Synced (JSONBin)", true);
       } catch (err) {
         updateSyncStatusUI("Offline / Saved Locally", false);
       }
@@ -626,13 +610,9 @@
 
     // Pull state from JSONBin.io
     async function pullCloudState() {
-      const binId = document.getElementById("binIdInput").value.trim();
-      const apiKey = document.getElementById("apiKeyInput").value.trim();
-      if (!binId || !apiKey) return;
-
       try {
-        const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-          headers: { "X-Master-Key": apiKey }
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}/latest`, {
+          headers: { "X-Master-Key": JSONBIN_KEY }
         });
         const json = await res.json();
         const data = json.record;
@@ -643,7 +623,7 @@
             renderCountiesOnMap();
             filterCountyList();
           }
-          updateSyncStatusUI("Cloud Synced", true);
+          updateSyncStatusUI("Cloud Synced (JSONBin)", true);
         }
       } catch (err) {}
     }
@@ -653,12 +633,8 @@
       syncInterval = setInterval(pullCloudState, 10000);
     }
 
-    function saveCloudConfig() {
-      const binId = document.getElementById("binIdInput").value.trim();
-      const apiKey = document.getElementById("apiKeyInput").value.trim();
-      safeSetItem("jsonbin_id", binId);
-      safeSetItem("jsonbin_key", apiKey);
-      closeShareModal();
+    function manualSyncNow() {
+      pushCloudState();
       pullCloudState();
     }
 
