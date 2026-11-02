@@ -125,7 +125,7 @@
       <span>🗺️ Texas Sales Opportunities Map</span>
       <div class="sync-badge" id="syncBadge">
         <div class="sync-dot" id="syncDot"></div>
-        <span id="syncStatusText">Cloud Synced (npoint.io)</span>
+        <span id="syncStatusText">Cloud Synced (Google Sheet)</span>
       </div>
     </div>
     <div class="header-controls">
@@ -234,8 +234,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label>npoint.io JSON Bin URL</label>
-          <input type="text" class="form-control" id="syncEndpointInput" value="https://api.npoint.io/e95746af6f04173579e6">
+          <label>Google Sheet Cloud Endpoint (Apps Script Web App URL)</label>
+          <input type="text" class="form-control" id="syncEndpointInput" value="https://script.google.com/macros/s/AKfycbx7APcpsS9QMV1yh978BXdXqma0XuW8BaviPkSH8yMRO0uVK6ecuGG8BQR07FOKTdXgpg/exec">
         </div>
         <div style="display: flex; gap: 10px;">
           <button class="btn btn-success" style="flex:1;" onclick="manualSyncNow()">🔄 Sync Now</button>
@@ -250,7 +250,7 @@
 
   <script>
     const CORRECT_PASSWORD = "govwindow2026";
-    const TEAM_SYNC_ENDPOINT = "https://api.npoint.io/e95746af6f04173579e6";
+    const TEAM_SYNC_ENDPOINT = "https://script.google.com/macros/s/AKfycbx7APcpsS9QMV1yh978BXdXqma0XuW8BaviPkSH8yMRO0uVK6ecuGG8BQR07FOKTdXgpg/exec";
     
     let activeUser = "Michael";
     let activePaintColor = "green";
@@ -282,7 +282,6 @@
       renderPaintToolbar();
       renderLegend();
       
-      // Pull initial cloud state first, then render map
       await pullCloudState();
       initMap();
       setupSyncPolling();
@@ -376,7 +375,7 @@
 
         renderCountiesOnMap();
         populateCountyList(geojsonCache);
-        updateSyncStatusUI("Cloud Synced (npoint.io)", true);
+        updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
       } catch (err) {
         console.error("Error loading map topology:", err);
       }
@@ -614,12 +613,14 @@
       };
 
       try {
+        // Use no-cors mode with text/plain payload to securely transmit to Google Apps Script
         await fetch(endpoint, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
           body: JSON.stringify(payload)
         });
-        updateSyncStatusUI("Cloud Synced (npoint.io)", true);
+        updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
       } catch (err) {
         updateSyncStatusUI("Offline / Saved Locally", false);
       }
@@ -639,7 +640,7 @@
             renderCountiesOnMap();
             filterCountyList();
           }
-          updateSyncStatusUI("Cloud Synced (npoint.io)", true);
+          updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
         }
       } catch (err) {}
     }
