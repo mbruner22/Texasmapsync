@@ -601,7 +601,8 @@
       }
     }
 
-    async function pushCloudState() {
+    // Bulletproof form-submit mechanism to write to Google Sheet without CORS blocks
+    function pushCloudState() {
       const endpoint = document.getElementById("syncEndpointInput").value || TEAM_SYNC_ENDPOINT;
       if (!endpoint) return;
 
@@ -612,18 +613,36 @@
         counties: mapData.counties
       };
 
-      try {
-        // Use no-cors mode with text/plain payload to securely transmit to Google Apps Script
-        await fetch(endpoint, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify(payload)
-        });
-        updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
-      } catch (err) {
-        updateSyncStatusUI("Offline / Saved Locally", false);
+      // Create a hidden form to submit directly to Google Apps Script
+      let form = document.getElementById("hiddenSyncForm");
+      if (!form) {
+        form = document.createElement("form");
+        form.id = "hiddenSyncForm";
+        form.method = "POST";
+        form.target = "hiddenSyncFrame";
+        
+        let iframe = document.getElementById("hiddenSyncFrame");
+        if (!iframe) {
+          iframe = document.createElement("iframe");
+          iframe.id = "hiddenSyncFrame";
+          iframe.name = "hiddenSyncFrame";
+          iframe.style.display = "none";
+          document.body.appendChild(iframe);
+        }
+        document.body.appendChild(form);
       }
+
+      form.action = endpoint;
+      form.innerHTML = "";
+
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "payload";
+      input.value = JSON.stringify(payload);
+      form.appendChild(input);
+
+      form.submit();
+      updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
     }
 
     async function pullCloudState() {
