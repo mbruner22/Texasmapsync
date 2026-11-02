@@ -24,7 +24,7 @@
     
     header { background: #1e293b; color: white; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10; }
     .header-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-    .header-controls { display: flex; align-items: center; gap: 12px; }
+    .header-controls { display: flex; align-items: center; gap: 10px; }
     .btn { background: #3b82f6; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: inline-flex; align-items: center; gap: 6px; }
     .btn:hover { background: #2563eb; }
     .btn-secondary { background: #475569; }
@@ -38,32 +38,31 @@
 
     .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
     
-    aside { width: 360px; background: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.02); transition: transform 0.3s ease; }
-    aside.collapsed { transform: translateX(-360px); position: absolute; height: 100%; }
+    aside { width: 380px; background: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.02); transition: transform 0.3s ease; }
+    aside.collapsed { transform: translateX(-380px); position: absolute; height: 100%; }
     .sidebar-toggle-floating { position: absolute; left: 10px; top: 10px; z-index: 20; background: #1e293b; color: white; border: none; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
     
     .sidebar-section { padding: 14px; border-bottom: 1px solid var(--border-color); }
     .sidebar-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; }
     
     .paint-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .paint-btn { padding: 6px 8px; border: 2px solid transparent; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 6px; background: #f1f5f9; color: var(--text-main); }
-    .paint-btn.active { border-color: var(--text-main); box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
-    .color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .paint-btn { padding: 8px 10px; border: 2px solid transparent; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 6px; background: #f1f5f9; color: var(--text-main); }
+    .paint-btn.active { border-color: var(--text-main); box-shadow: 0 0 0 2px rgba(0,0,0,0.15); background: #e2e8f0; }
+    .color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 
     .search-box { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
     .filter-row { display: flex; gap: 6px; margin-bottom: 8px; }
     .filter-select { flex: 1; padding: 6px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; background: white; }
     
-    .county-list { flex: 1; overflow-y: auto; max-height: 240px; border: 1px solid var(--border-color); border-radius: 6px; background: white; }
-    .county-item { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; font-size: 13px; cursor: pointer; }
+    .county-list { flex: 1; overflow-y: auto; max-height: calc(100vh - 350px); border: 1px solid var(--border-color); border-radius: 6px; background: white; }
+    .county-item { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; font-size: 13px; cursor: pointer; }
     .county-item:hover { background: #f8fafc; }
     .county-item.selected { background: #eff6ff; border-left: 4px solid var(--accent); }
     
     .map-container { flex: 1; position: relative; background: #fdfdfd; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     svg { width: 100%; height: 100%; display: block; }
     
-    /* Drawer styling */
-    .drawer { position: absolute; right: 0; top: 0; width: 400px; height: 100%; background: white; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.05); z-index: 15; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s ease; }
+    .drawer { position: absolute; right: 0; top: 0; width: 420px; height: 100%; background: white; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.1); z-index: 15; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s ease; }
     .drawer.open { transform: translateX(0); }
     .drawer-header { padding: 16px 20px; background: #1e293b; color: white; display: flex; justify-content: space-between; align-items: center; }
     .drawer-body { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
@@ -125,20 +124,20 @@
     <div class="header-controls">
       <button class="btn btn-secondary" onclick="openShareModal()">👤 User Settings</button>
       <button class="btn btn-secondary" onclick="exportPNG()">📥 Export PNG</button>
-      <button class="btn" onclick="toggleFullscreen()">⛶ Pop Out Full Screen</button>
+      <button class="btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
     </div>
   </header>
 
   <div class="workspace">
     <aside id="sidebar">
       <div class="sidebar-section">
-        <h3>Paint Brush (Master County Status)</h3>
+        <h3>Paint Brush (Click County to Paint)</h3>
         <div class="paint-toolbar" id="paintToolbar"></div>
       </div>
 
-      <div class="sidebar-section">
-        <h3>Territory Search & Filter</h3>
-        <input type="text" class="search-box" id="countySearch" placeholder="Search 254 counties..." oninput="filterCountyList()">
+      <div class="sidebar-section" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+        <h3>254 Counties (Click name for Drawer)</h3>
+        <input type="text" class="search-box" id="countySearch" placeholder="Search counties..." oninput="filterCountyList()">
         <div class="filter-row">
           <select class="filter-select" id="ownerFilter" onchange="filterCountyList()">
             <option value="ALL">All Owners</option>
@@ -169,7 +168,7 @@
       </div>
     </div>
 
-    <!-- County & Departments Drawer -->
+    <!-- County Drawer with Dedicated Department Accounts -->
     <div class="drawer" id="countyDrawer">
       <div class="drawer-header">
         <div>
@@ -180,7 +179,6 @@
       </div>
       <div class="drawer-body">
         
-        <!-- General County Overview -->
         <div class="form-group">
           <label>Master County Status</label>
           <select class="form-control" id="drawerMasterStatus" onchange="updateMasterStatusFromDrawer()">
@@ -191,15 +189,15 @@
           </select>
         </div>
 
-        <hr style="border:0; border-top:1px solid var(--border-color); margin: 4px 0;">
+        <hr style="border:0; border-top:1px solid var(--border-color); margin: 2px 0;">
 
-        <!-- 1. Tax Assessor-Collector Department -->
+        <!-- 1. Tax Assessor-Collector -->
         <div class="dept-card">
           <div class="dept-title">
             <span>🏛️ Tax Assessor-Collector</span>
             <span id="taxContactDisplay" style="font-size:11px; font-weight:normal; color:var(--text-muted);"></span>
           </div>
-          <div style="font-size: 11px; color: var(--text-muted);" id="taxMetaDisplay">Est. Tax AGR: $0 | Est. DMV AGR: $0</div>
+          <div style="font-size: 11px; color: var(--accent); font-weight:600;" id="taxMetaDisplay">Est. Tax AGR: $0 | Est. DMV AGR: $0</div>
           <div class="dept-grid">
             <div class="form-group">
               <label>Owner</label>
@@ -221,12 +219,12 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Notes & Next Steps</label>
-            <input type="text" class="form-control" id="taxNotes" placeholder="Notes..." oninput="updateDeptFromDrawer()">
+            <label>Notes</label>
+            <input type="text" class="form-control" id="taxNotes" placeholder="Notes & updates..." oninput="updateDeptFromDrawer()">
           </div>
         </div>
 
-        <!-- 2. County Clerk Department -->
+        <!-- 2. County Clerk -->
         <div class="dept-card">
           <div class="dept-title">
             <span>📜 County Clerk</span>
@@ -264,7 +262,7 @@
           </div>
         </div>
 
-        <!-- 3. District Clerk Department -->
+        <!-- 3. District Clerk -->
         <div class="dept-card">
           <div class="dept-title">
             <span>⚖️ District Clerk</span>
@@ -302,7 +300,7 @@
           </div>
         </div>
 
-        <div style="margin-top: auto;">
+        <div style="margin-top: auto; padding-top: 10px;">
           <button class="btn" style="width:100%; justify-content:center;" onclick="closeDrawer()">Done</button>
         </div>
       </div>
@@ -360,7 +358,7 @@
     let syncInterval = null;
 
     const defaultInitialGreens = ["Sherman", "Green", "Wood", "Smith", "Bastrop", "Gonzales", "Bee", "Cameron"];
-    const defaultInitialYellows = ["Potter", "Randall", "Lubbock", "Ector", "Midland", "Tom Green", "San Saba", "McLennan", "Bell", "Williamson", "Bastrop", "Fort Bend", "Brazoria", "Galveston", "Nueces", "Hidalgo", "Kenedy", "Willacy"];
+    const defaultInitialYellows = ["Potter", "Randall", "Lubbock", "Ector", "Midland", "Tom Green", "San Saba", "McLennan", "Bell", "Williamson", "Fort Bend", "Brazoria", "Galveston", "Nueces", "Hidalgo", "Kenedy", "Willacy"];
     const defaultInitialOranges = ["Wichita", "Wise", "Denton", "Collin", "Titus", "Orange"];
 
     window.addEventListener("DOMContentLoaded", async () => {
@@ -380,10 +378,11 @@
 
     async function loadDirectoryData() {
       try {
-        const res = await fetch("https://raw.githubusercontent.com/mbruner22/Texasmapsync/main/directory_data.json");
+        const res = await fetch("directory_data.json");
         countyDirectory = await res.json();
       } catch(e) {
-        // Fallback baseline estimate if external lookup missing
+        // Fallback default
+        countyDirectory = {};
       }
     }
 
@@ -405,7 +404,7 @@
     }
 
     function loadLocalState() {
-      const saved = safeGetItem("tx_sales_map_departments_v1");
+      const saved = safeGetItem("tx_sales_map_departments_v2");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -415,7 +414,7 @@
     }
 
     function saveLocalState() {
-      safeSetItem("tx_sales_map_departments_v1", JSON.stringify(mapData));
+      safeSetItem("tx_sales_map_departments_v2", JSON.stringify(mapData));
     }
 
     async function initMap() {
@@ -439,7 +438,9 @@
         .on("zoom", (event) => {
           gSelection.attr("transform", event.transform);
         });
-      svgSelection.call(zoom);
+        
+      // CRUCIAL: Disable d3 double-click zoom so dblclick opens the county drawer!
+      svgSelection.call(zoom).on("dblclick.zoom", null);
 
       try {
         if (!geojsonCache) {
@@ -477,7 +478,7 @@
         populateCountyList(geojsonCache);
         updateSyncStatusUI("Cloud Synced (JSONBin)", true);
       } catch (err) {
-        console.error("Error loading map topology:", err);
+        console.error("Error initializing map:", err);
       }
     }
 
@@ -511,7 +512,7 @@
         .style("cursor", "pointer")
         .on("click", (event, d) => {
           event.stopPropagation();
-          handleCountyClick(d.properties.name);
+          handleCountyMapClick(d.properties.name);
         })
         .on("dblclick", (event, d) => {
           event.stopPropagation();
@@ -541,26 +542,33 @@
         .text(d => d.properties.name);
     }
 
-    let clickTimeout = null;
-    function handleCountyClick(name) {
-      if (clickTimeout) {
-        clearTimeout(clickTimeout);
-        clickTimeout = null;
+    let clickTimer = null;
+    function handleCountyMapClick(name) {
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
         openDrawerForCounty(name);
         return;
       }
-      clickTimeout = setTimeout(() => {
-        clickTimeout = null;
+      clickTimer = setTimeout(() => {
+        clickTimer = null;
         paintCounty(name);
       }, 250);
     }
 
     function paintCounty(name) {
       if (!mapData.counties[name]) {
-        mapData.counties[name] = { status: activePaintColor, tax: { owner: "Unassigned", status: activePaintColor, notes: "" }, cc: { owner: "Unassigned", status: "gray", value: "", notes: "" }, dc: { owner: "Unassigned", status: "gray", value: "", notes: "" } };
+        mapData.counties[name] = {
+          status: activePaintColor,
+          tax: { owner: "Unassigned", status: activePaintColor, notes: "" },
+          cc: { owner: "Unassigned", status: "gray", value: "", notes: "" },
+          dc: { owner: "Unassigned", status: "gray", value: "", notes: "" }
+        };
+      } else {
+        mapData.counties[name].status = activePaintColor;
+        if (!mapData.counties[name].tax) mapData.counties[name].tax = { owner: "Unassigned", notes: "" };
+        mapData.counties[name].tax.status = activePaintColor;
       }
-      mapData.counties[name].status = activePaintColor;
-      mapData.counties[name].tax.status = activePaintColor;
       saveLocalState();
       renderCountiesOnMap();
       filterCountyList();
@@ -577,9 +585,10 @@
 
       const filtered = features.filter(f => {
         const name = f.properties.name;
-        const data = mapData.counties[name] || { status: "gray", tax: {owner:"Unassigned"}, cc: {owner:"Unassigned"}, dc: {owner:"Unassigned"} };
+        const data = mapData.counties[name] || { status: "gray", tax: {owner:"Unassigned"} };
+        const rep = (data.tax && data.tax.owner) || "Unassigned";
         if (searchVal && !name.toLowerCase().includes(searchVal)) return false;
-        if (ownerVal !== "ALL" && data.tax.owner !== ownerVal && data.cc.owner !== ownerVal && data.dc.owner !== ownerVal) return false;
+        if (ownerVal !== "ALL" && rep !== ownerVal) return false;
         if (statusVal !== "ALL" && data.status !== statusVal) return false;
         return true;
       });
@@ -588,27 +597,65 @@
 
       filtered.forEach(f => {
         const name = f.properties.name;
-        const data = mapData.counties[name] || { status: "gray", tax: {owner:"Unassigned"}, cc: {owner:"Unassigned"}, dc: {owner:"Unassigned"} };
-        const cat = mapData.categories.find(c => c.id === data.status) || mapData.categories[3];
+        const data = mapData.counties[name] || { status: "gray", tax: {owner:"Unassigned"} };
+        const rep = (data.tax && data.tax.owner) || "Unassigned";
 
         const div = document.createElement("div");
         div.className = `county-item ${selectedCountyId === name ? "selected" : ""}`;
         div.innerHTML = `
-          <div>
+          <div style="flex:1; cursor:pointer;" onclick="openDrawerForCounty('${name}')">
             <strong>${name}</strong>
-            <div style="font-size:11px; color:var(--text-muted);">Tax: ${data.tax.owner} | CC: ${data.cc.owner}</div>
+            <div style="font-size:11px; color:var(--text-muted);">Rep: ${rep}</div>
           </div>
           <div style="display:flex; align-items:center; gap:6px;">
-            <span style="width:10px; height:10px; border-radius:50%; background:${cat.color}; display:inline-block;"></span>
+            <!-- Quick Status / Color Selector -->
+            <select class="filter-select" style="font-size:11px; padding:2px; font-weight:600;" onchange="event.stopPropagation(); quickChangeStatus('${name}', this.value)">
+              <option value="green" ${data.status==="green"?"selected":""}>🟢 Cust</option>
+              <option value="yellow" ${data.status==="yellow"?"selected":""}>🟡 Pipe</option>
+              <option value="orange" ${data.status==="orange"?"selected":""}>🟠 Sign</option>
+              <option value="gray" ${data.status==="gray"?"selected":""}>⚪ Gray</option>
+            </select>
+            <!-- Quick Rep Selector -->
+            <select class="filter-select" style="font-size:11px; padding:2px;" onchange="event.stopPropagation(); quickChangeOwner('${name}', this.value)">
+              <option value="Unassigned" ${rep==="Unassigned"?"selected":""}>Unassigned</option>
+              <option value="Michael" ${rep==="Michael"?"selected":""}>Michael</option>
+              <option value="Forrest" ${rep==="Forrest"?"selected":""}>Forrest</option>
+              <option value="Zach" ${rep==="Zach"?"selected":""}>Zach</option>
+            </select>
           </div>
         `;
-        div.onclick = () => openDrawerForCounty(name);
         container.appendChild(div);
       });
     }
 
     function filterCountyList() {
       if (geojsonCache) populateCountyList(geojsonCache);
+    }
+
+    function quickChangeStatus(name, newStatus) {
+      if (!mapData.counties[name]) {
+        mapData.counties[name] = { status: newStatus, tax: { owner: "Unassigned", status: newStatus, notes: "" }, cc: { owner: "Unassigned", status: "gray", value: "", notes: "" }, dc: { owner: "Unassigned", status: "gray", value: "", notes: "" } };
+      } else {
+        mapData.counties[name].status = newStatus;
+        if (!mapData.counties[name].tax) mapData.counties[name].tax = { owner: "Unassigned", notes: "" };
+        mapData.counties[name].tax.status = newStatus;
+      }
+      saveLocalState();
+      renderCountiesOnMap();
+      filterCountyList();
+      pushCloudState();
+    }
+
+    function quickChangeOwner(name, owner) {
+      if (!mapData.counties[name]) {
+        mapData.counties[name] = { status: "gray", tax: { owner: owner, status: "gray", notes: "" }, cc: { owner: "Unassigned", status: "gray", value: "", notes: "" }, dc: { owner: "Unassigned", status: "gray", value: "", notes: "" } };
+      } else {
+        if (!mapData.counties[name].tax) mapData.counties[name].tax = { status: mapData.counties[name].status || "gray", notes: "" };
+        mapData.counties[name].tax.owner = owner;
+      }
+      saveLocalState();
+      filterCountyList();
+      pushCloudState();
     }
 
     function openDrawerForCounty(name) {
@@ -631,19 +678,19 @@
 
       document.getElementById("drawerMasterStatus").value = data.status || "gray";
       
-      document.getElementById("taxOwner").value = data.tax.owner || "Unassigned";
-      document.getElementById("taxStatus").value = data.tax.status || "gray";
-      document.getElementById("taxNotes").value = data.tax.notes || "";
+      document.getElementById("taxOwner").value = (data.tax && data.tax.owner) || "Unassigned";
+      document.getElementById("taxStatus").value = (data.tax && data.tax.status) || "gray";
+      document.getElementById("taxNotes").value = (data.tax && data.tax.notes) || "";
 
-      document.getElementById("ccOwner").value = data.cc.owner || "Unassigned";
-      document.getElementById("ccStatus").value = data.cc.status || "gray";
-      document.getElementById("ccValue").value = data.cc.value || "";
-      document.getElementById("ccNotes").value = data.cc.notes || "";
+      document.getElementById("ccOwner").value = (data.cc && data.cc.owner) || "Unassigned";
+      document.getElementById("ccStatus").value = (data.cc && data.cc.status) || "gray";
+      document.getElementById("ccValue").value = (data.cc && data.cc.value) || "";
+      document.getElementById("ccNotes").value = (data.cc && data.cc.notes) || "";
 
-      document.getElementById("dcOwner").value = data.dc.owner || "Unassigned";
-      document.getElementById("dcStatus").value = data.dc.status || "gray";
-      document.getElementById("dcValue").value = data.dc.value || "";
-      document.getElementById("dcNotes").value = data.dc.notes || "";
+      document.getElementById("dcOwner").value = (data.dc && data.dc.owner) || "Unassigned";
+      document.getElementById("dcStatus").value = (data.dc && data.dc.status) || "gray";
+      document.getElementById("dcValue").value = (data.dc && data.dc.value) || "";
+      document.getElementById("dcNotes").value = (data.dc && data.dc.notes) || "";
 
       document.getElementById("countyDrawer").classList.add("open");
       if (geojsonCache) populateCountyList(geojsonCache);
@@ -662,7 +709,10 @@
         mapData.counties[selectedCountyId] = { tax: {}, cc: {}, dc: {} };
       }
       mapData.counties[selectedCountyId].status = status;
-      mapData.counties[selectedCountyId].tax.status = status;
+      if (mapData.counties[selectedCountyId].tax) {
+        mapData.counties[selectedCountyId].tax.status = status;
+        document.getElementById("taxStatus").value = status;
+      }
       saveLocalState();
       renderCountiesOnMap();
       filterCountyList();
@@ -695,8 +745,12 @@
         notes: document.getElementById("dcNotes").value
       };
 
-      // Set master status to highest priority department status
-      const statuses = [mapData.counties[selectedCountyId].tax.status, mapData.counties[selectedCountyId].cc.status, mapData.counties[selectedCountyId].dc.status];
+      // Calculate master status based on highest priority department
+      const statuses = [
+        mapData.counties[selectedCountyId].tax.status,
+        mapData.counties[selectedCountyId].cc.status,
+        mapData.counties[selectedCountyId].dc.status
+      ];
       let bestStatus = "gray";
       if (statuses.includes("orange")) bestStatus = "orange";
       else if (statuses.includes("yellow")) bestStatus = "yellow";
