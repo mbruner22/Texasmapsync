@@ -22,7 +22,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { background: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
     
-    /* Top Bar */
     header { background: #1e293b; color: white; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10; }
     .header-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
     .header-controls { display: flex; align-items: center; gap: 12px; }
@@ -33,15 +32,12 @@
     .btn-success { background: var(--green); }
     .btn-success:hover { background: #15803d; }
     
-    /* Sync Status Badge */
     .sync-badge { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.1); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.2); }
     .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
     .sync-dot.offline { background: #eab308; }
 
-    /* Main Workspace */
     .workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
     
-    /* Sidebar */
     aside { width: 340px; background: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 5; box-shadow: 2px 0 5px rgba(0,0,0,0.02); transition: transform 0.3s ease; }
     aside.collapsed { transform: translateX(-340px); position: absolute; height: 100%; }
     .sidebar-toggle-floating { position: absolute; left: 10px; top: 10px; z-index: 20; background: #1e293b; color: white; border: none; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
@@ -49,13 +45,11 @@
     .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border-color); }
     .sidebar-section h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 10px; }
     
-    /* Paint Toolbar */
     .paint-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .paint-btn { padding: 8px 10px; border: 2px solid transparent; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px; background: #f1f5f9; color: var(--text-main); }
     .paint-btn.active { border-color: var(--text-main); box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
     .color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 
-    /* County List & Search */
     .search-box { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
     .filter-row { display: flex; gap: 6px; margin-bottom: 8px; }
     .filter-select { flex: 1; padding: 6px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; background: white; }
@@ -65,11 +59,9 @@
     .county-item:hover { background: #f8fafc; }
     .county-item.selected { background: #eff6ff; border-left: 4px solid var(--accent); }
     
-    /* Map Container */
     .map-container { flex: 1; position: relative; background: #fdfdfd; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     svg { width: 100%; height: 100%; display: block; }
     
-    /* County Details Drawer */
     .drawer { position: absolute; right: 0; top: 0; width: 360px; height: 100%; background: white; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.05); z-index: 15; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s ease; }
     .drawer.open { transform: translateX(0); }
     .drawer-header { padding: 16px 20px; background: #1e293b; color: white; display: flex; justify-content: space-between; align-items: center; }
@@ -79,14 +71,12 @@
     .form-control { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; }
     textarea.form-control { resize: vertical; min-height: 100px; }
 
-    /* Legend Overlay on Map */
     .map-legend { position: absolute; bottom: 20px; left: 20px; background: rgba(255,255,255,0.95); padding: 12px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--border-color); font-size: 12px; z-index: 10; backdrop-filter: blur(4px); }
     .legend-title { font-weight: 700; margin-bottom: 8px; font-size: 13px; color: var(--text-main); }
     .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; cursor: pointer; }
     .legend-item:hover { opacity: 0.8; }
     .legend-color { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); }
 
-    /* Modal dialogs */
     .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-backdrop.open { opacity: 1; pointer-events: auto; }
     .modal { background: white; width: 420px; max-width: 90%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; }
@@ -99,7 +89,6 @@
 </head>
 <body>
 
-  <!-- Password Protection Modal -->
   <div class="modal-backdrop open" id="passwordModal">
     <div class="modal" style="width: 380px;">
       <div class="modal-header">
@@ -119,7 +108,6 @@
     </div>
   </div>
 
-  <!-- Top Navigation Header -->
   <header>
     <div class="header-title">
       <span>🗺️ Texas Sales Opportunities Map</span>
@@ -136,7 +124,6 @@
   </header>
 
   <div class="workspace">
-    <!-- Collapsible Sidebar -->
     <aside id="sidebar">
       <div class="sidebar-section">
         <h3>Paint Brush</h3>
@@ -168,7 +155,6 @@
 
     <button class="sidebar-toggle-floating" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Sidebar">≡</button>
 
-    <!-- Map Viewport -->
     <div class="map-container" id="mapContainer">
       <svg id="mapSvg"></svg>
       <div class="map-legend" id="mapLegend">
@@ -177,7 +163,6 @@
       </div>
     </div>
 
-    <!-- County Details Drawer -->
     <div class="drawer" id="countyDrawer">
       <div class="drawer-header">
         <h3 id="drawerTitle">County Details</h3>
@@ -217,7 +202,6 @@
     </div>
   </div>
 
-  <!-- Share & Sync Modal -->
   <div class="modal-backdrop" id="shareModal">
     <div class="modal">
       <div class="modal-header">
@@ -282,7 +266,7 @@
       renderPaintToolbar();
       renderLegend();
       
-      await pullCloudState();
+      pullCloudState();
       initMap();
       setupSyncPolling();
     });
@@ -601,7 +585,7 @@
       }
     }
 
-    // Bulletproof form-submit mechanism to write to Google Sheet without CORS blocks
+    // Push data via hidden form post
     function pushCloudState() {
       const endpoint = document.getElementById("syncEndpointInput").value || TEAM_SYNC_ENDPOINT;
       if (!endpoint) return;
@@ -613,7 +597,6 @@
         counties: mapData.counties
       };
 
-      // Create a hidden form to submit directly to Google Apps Script
       let form = document.getElementById("hiddenSyncForm");
       if (!form) {
         form = document.createElement("form");
@@ -645,13 +628,12 @@
       updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
     }
 
-    async function pullCloudState() {
+    // Pull data via JSONP script tag injection (bypasses CORS completely)
+    function pullCloudState() {
       const endpoint = document.getElementById("syncEndpointInput").value || TEAM_SYNC_ENDPOINT;
       if (!endpoint) return;
 
-      try {
-        const res = await fetch(endpoint);
-        const data = await res.json();
+      window.handleMapDataResponse = function(data) {
         if (data && data.counties && Object.keys(data.counties).length > 0) {
           mapData.counties = data.counties;
           saveLocalState();
@@ -661,7 +643,16 @@
           }
           updateSyncStatusUI("Cloud Synced (Google Sheet)", true);
         }
-      } catch (err) {}
+      };
+
+      // Inject JSONP script tag
+      const oldScript = document.getElementById("jsonpScript");
+      if (oldScript) oldScript.remove();
+
+      const script = document.createElement("script");
+      script.id = "jsonpScript";
+      script.src = `${endpoint}?callback=handleMapDataResponse&_=${Date.now()}`;
+      document.body.appendChild(script);
     }
 
     function setupSyncPolling() {
